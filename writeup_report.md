@@ -98,7 +98,7 @@ The additional data that I very cautiously generated was some "recovery driving"
 
 I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
 
-[image1]
+![image1]
 
 #### 5. Final Model Architecture
 
