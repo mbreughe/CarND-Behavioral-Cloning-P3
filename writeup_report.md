@@ -73,7 +73,7 @@ As mentioned before, I used a dropout layer (with 50% retention rate), to avoid 
 
 In addition, I found it useful to reset the start learning rate of the optimizer when finetuning the model (see next section).
 
-Also, when introducing new data to help the car in tricky situations (e.g., give new training data based on a tricky bend), I found it a must to train the network with all data. The model seems to learn a new function when only giving it this "exception handling training data". 
+Also, when introducing new data to help the car in tricky situations (e.g., give new training data based on a tricky bend), I found it a must to train the network with all data. The model seems to learn a new function when only giving it this "exception handling training data". This new function does not generalize to the old training data and you would suddenly see the car not being able to handle simple road sections anymore.
 
 I used scikits's built-in function to split my data between train and validation sets. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
@@ -93,7 +93,7 @@ I tried a couple of additional cropping layers and fully connected layers, but d
 
 I used the data provided by Udacity, in addition to lots of self-created training data that I recorded from the simulator. I initially tried without the Udacity data, but I think my driving skills in the simulator are not that smooth :) -- though I used a PS4 controller. 
 
-The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4. 
+The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road.
 
 I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
 
