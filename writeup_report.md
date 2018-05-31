@@ -12,13 +12,13 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./images/center_driving.jpg "Model Visualization"
-[image2]: ./images/recovery.jpg "Grayscaling"
-[image3]: ./images/border.jpg "Recovery Image"
-[image4]: ./images/bend_1.jpg "Recovery Image"
-[image7]: ./images/bridge.jpg "Flipped Image"
-[image5]: ./images/bend_2.jpg "Recovery Image"
-[image6]: ./images/bend_4.jpg "Normal Image"
+[center]: ./images/center_driving.jpg "Model Visualization"
+[recovery]: ./images/recovery.jpg "Grayscaling"
+[border]: ./images/border.jpg "Recovery Image"
+[bend_1]: ./images/bend_1.jpg "Recovery Image"
+[bridge]: ./images/bridge.jpg "Flipped Image"
+[bend_2]: ./images/bend_2.jpg "Recovery Image"
+[bend_4]: ./images/bend_4.jpg "Normal Image"
 
 
 ## Rubric Points
@@ -54,7 +54,7 @@ The model.py file contains the code for training and saving the convolution neur
 The overal approach was to create an incremental better network by 1) changing the architecture, 2) changing hyper-parameters and 3) supplying training data in tricky situations. I started out with a simple LeNet-network just to have the car do something. Soon I started implementing the Nvidia network for self-driving cars, documented here: https://devblogs.nvidia.com/deep-learning-self-driving-cars/, with some small adjustments.
 
 The biggest challenge I had was the fact that Cropping2D didn't work on the deployment machine: https://discussions.udacity.com/t/cropping2d-tensorflow-python-framework-errors-impl-invalidargumenterror/704632. 
-I spent around 20hours training this nvidia-based model without the Cropping2D layer, because I was destined to make it work. The biggest improvement in this model were the introduction of a MaxPooling layer to reduce the image size 4x. This was an attempt to "blur out" the details as an alternative to cropping them out. Another big improvement came from increasing the batch size from 32 to 512. By providing specialized training data for the first bend and the bridge, I was able to make it all the way through bend number 2. Supplying 3442 additional images for this tricky situation did not solve the problem. This first model is saved as **model_no_crop.h5**, which drives pretty smooth until that second bend. I'd suggest the reader to also try out this model.
+I spent around 20 hours training this nvidia-based model without the Cropping2D layer, because I was destined to make it work. The biggest improvement in this model were the introduction of a MaxPooling layer to reduce the image size 4x. This was an attempt to "blur out" the details as an alternative to cropping them out. Another big improvement came from increasing the batch size from 32 to 512. By providing specialized training data for the first bend and the bridge, I was able to make it all the way through bend number 2. Supplying 3442 additional images for this tricky situation did not solve the problem. This first model is saved as **model_no_crop.h5**, which drives pretty smooth until that second bend. I'd suggest the reader to also try out this model.
 
 Another challenge I had, was the fact that after multiple training runs (over 60) I wasn't able to find a good correction factor for the steering angles when using left and right images: https://discussions.udacity.com/t/multiple-cameras-how-to-tune/709391. I suspect the Cropping2D image was also preventing me from finding this factor. This however, significantly reduced the amount of training data I could have used (by 66% !!)
 
@@ -92,13 +92,32 @@ I tried a couple of additional cropping layers and fully connected layers, but d
 
 #### 4. Appropriate training data
 
-I used the data provided by Udacity, in addition to lots of self-created training data that I recorded from the simulator. I initially tried without the Udacity data, but I think my driving skills in the simulator are not that smooth :) -- though I used a PS4 controller. 
+I used the data provided by Udacity, in addition to lots of self-created training data that I recorded from the simulator. I initially tried without the Udacity data, but I think my driving skills in the simulator are not that smooth :) -- though I used a PS4 controller. f
 
-The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road.
+The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road. Here is an overview:
+
+Some center lane driving data:
+[center]
+
+Data to get past bend 1:
+[bend_1]
+
+Data to get past the bridge:
+[bridge]
+
+Data to get past bend 2:
+[bend_2]
+
+Getting past bend 4:
+[bend_4]
+
+Recovery data:
+[recovery]
+
+Making sure we don't drive out of the track:
+[border]
 
 I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
-
-![image1]: "More attempts"
 
 #### 5. Final Model Architecture
 
