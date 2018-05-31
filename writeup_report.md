@@ -58,7 +58,7 @@ I spent around 20 hours training this nvidia-based model without the Cropping2D 
 
 Another challenge I had, was the fact that after multiple training runs (over 60) I wasn't able to find a good correction factor for the steering angles when using left and right images: https://discussions.udacity.com/t/multiple-cameras-how-to-tune/709391. I suspect the Cropping2D image was also preventing me from finding this factor. This however, significantly reduced the amount of training data I could have used (by 66% !!)
 
-Instead of quiting with a pretty good model (for not being able to crop images), I investigated different strategies to fix the initial cropping issue. I ended up creating a custom Lambda layer in Keras, that does the cropping for me. Building the layer itself costed me about an hour, which was a very good investment. The car was able to drive through bend 2 and even bend 3 without providing specialized data for it. Using this pretrained model, I was able to get through the whole track by providing additional training data for bend 4. This model is saved as **model.h5**, is less smooth than model_no_crop.h5, but drives multiple laps successfully. Because of its shaky behavior, I would probably not assign it as my designated driver just yet :).
+Instead of quiting with a pretty good model (for not being able to crop images), I investigated different strategies to fix the initial cropping issue. I ended up creating a custom Lambda layer in Keras, that does the cropping for me. Building the layer itself costed me about an hour, which was a very good investment. The car was able to drive through bend 2 and even bend 3 without providing specialized data for it. Using this pretrained model, I was able to get through the whole track by providing additional training data for bend 4. This model is saved as **model.h5**, is less smooth than model_no_crop.h5, but drives multiple laps successfully. Because of its shaky behavior, I would probably not assign it as my designated driver just yet :). The video in **run1.mp4** is a reflection of this model.
 
 #### 2. An appropriate model architecture has been employed
 
@@ -97,25 +97,25 @@ I used the data provided by Udacity, in addition to lots of self-created trainin
 The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road. Here is an overview:
 
 Some center lane driving data:
-[center]
+![center]
 
 Data to get past bend 1:
-[bend_1]
+![bend_1]
 
 Data to get past the bridge:
-[bridge]
+![bridge]
 
 Data to get past bend 2:
-[bend_2]
+![bend_2]
 
 Getting past bend 4:
-[bend_4]
+![bend_4]
 
 Recovery data:
-[recovery]
+![recovery]
 
 Making sure we don't drive out of the track:
-[border]
+![border]
 
 I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
 
