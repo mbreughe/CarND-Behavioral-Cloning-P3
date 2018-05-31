@@ -12,13 +12,14 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./images/center_driving.jpg "Model Visualization"
+[image2]: ./images/recovery.jpg "Grayscaling"
+[image3]: ./images/border.jpg "Recovery Image"
+[image4]: ./images/bend_1.jpg "Recovery Image"
+[image7]: ./images/bridge.jpg "Flipped Image"
+[image5]: ./images/bend_2.jpg "Recovery Image"
+[image6]: ./images/bend_4.jpg "Normal Image"
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -96,6 +97,8 @@ I used the data provided by Udacity, in addition to lots of self-created trainin
 The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road.
 
 I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
+
+[image1]
 
 #### 5. Final Model Architecture
 
