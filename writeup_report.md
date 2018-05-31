@@ -50,19 +50,31 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+My model consists of a convolution neural network with 5x5 and 3x3 filter sizes and depths between 24 and 64. 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+After the final convolution layer, it flattens the previous output, adds dropout and adds 4 dense layers. The dense layers use ReLU activation to introduce nonlinearity.
+
+Prior to going through the network, the images are normalized, and cropped using two lambda functions. Keras's built-in Cropping2D layer did not work on the deployment machine, which is why I implemented a Lambda function to achieve the s ame result.
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
+As mentioned before, I used a dropout layer (with 50% retention rate), to avoid overfitting. I introduced it rather early in the model, but I do remember it helping with overfitting.
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+In addition, I found it useful to reset the start learning rate of the optimizer when finetuning the model (see next section).
+
+Also, when introducing new data to help the car in tricky situations (e.g., give new training data based on a tricky bend), I found it a must to train the network with all data. The model seems to learn a new function when only giving it this "exception handling training data". 
+
+I used scikits's built-in function to split my data between train and validation sets. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer, however, I did use a start learning of 0.001. In addition, when fine-tuning successful models, I found it useful to reset the the start learning rate to 0.001 to avoid overfitting.
+
+I used 10 epochs for the initial model and 4 epochs for refined versions.
+
+I played around with batch sizes as well and found that the largest number I tried (512) achieved significant better results.
+
+I used 33% of all data as validation data.
 
 #### 4. Appropriate training data
 
