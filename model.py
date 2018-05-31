@@ -19,31 +19,39 @@ from keras.layers.core import Dense
 from keras.layers import Cropping2D
 from keras.layers import Lambda
 from keras.layers import Dropout
+from collections import namedtuple
 
-global correction
+# Whether to use Keras' Cropping2D layer (does not work on deployment machine)
 global use_cropping
+# Wheter to use left and right images (False for solution)
 global use_left_right
+# Correction factor for left and right images (not used in solution)
+global correction
+# The starting learn rate
 global start_learn_rate
+
 use_left_right = False
 use_cropping = False
 correction = 1.0 # 2.0 --> worse than no data (2.6 mse); 4.0 pretty good (0.0052, but last epoch very bad); 6.0 --> 26 mse; 5 --> 0.008 (last epoch very bad); 3.0 --> very bad; 3.5 --> 8; 3.75 --> 9; 4.1 --> 11; 3.4 -> 7.7; 3.9 --> 0.025, last 2 epoch very bad; 3.8 --> 0.006 last 2 epoch 10 
+
+# Hyper parameter settings
 start_learn_rate = 0.001
-batch_size = 32
+batch_size = 512
 num_epochs = 4
 test_size = 0.33
 
-from collections import namedtuple
-
+# Structure to hold image filename and whether or not this image needs to be flipped
 img_data = namedtuple("img_data", ["img_path", "flip"])
 
-# Read the csv file and add files
-# It also flips your images among vertical axis to create additional data
-# use_left_right attempts to use left and right images in addition to center image.
-# it does this by using the global "correction" factor
-# repeat is a failed experiment where I copy some images multiple times
+# 1)Read the csv file and add files
+# 2)It also flips your images among vertical axis to create additional data
+# 3)use_left_right attempts to use left and right images in addition to center image.
+# it does this by using the global "correction" factor. 
+# This is not used in the solution.
+# 4)repeat is a failed experiment where I copy some images multiple times
 # --> this is bad as your validation set is likely to contain copies of your train data set!
+# Therefore this is not used in the final solution either.
 def add_data(imgs, steering, data_path, use_left_right=False, repeat=1):
-    print("Adding L/R data with correction {}".format(correction))
     csv_f = os.path.join(data_path, "driving_log.csv")
     
     fnames = []
@@ -60,6 +68,7 @@ def add_data(imgs, steering, data_path, use_left_right=False, repeat=1):
             raw_steering.append(steer)
             
             if use_left_right:
+                print("Adding L/R data with correction {}".format(correction))
                 rel_path_left = "/".join(line[1].strip().split("\\")[-2:])
                 rel_path_right = "/".join(line[2].strip().split("\\")[-2:])
                 steer_left = steer + correction
@@ -98,8 +107,6 @@ def batchGenerator(features, labels, batch_size):
 
 # Initial model
 def createLenet():
-    
-    
     model = Sequential()
     # Crop off sky and hood of car
     #model.add(Cropping2D(cropping=((50,20), (1,1)), input_shape=(160, 320,3)))
@@ -125,6 +132,7 @@ def createLenet():
     return model
 
 # Custom way of cropping
+# This is used because Cropping2D does not work on deployment machine
 def rookieCrop(x):
     import tensorflow as tf
     mask = np.ones(x.get_shape()[1:])
@@ -135,6 +143,7 @@ def rookieCrop(x):
     #return output
     return x[:,50:-20,:,:]
 
+# Nvidia's self driving car model
 def createNvidia():
     model = Sequential()
     
@@ -177,6 +186,8 @@ def createNvidia():
 # simulator: recovery training really hard since the road edges are too high
 # how is aceleration and braking set??
 # recording takes too much time: could it be done without rendering?
+
+# Train the model
 def train(model, imgs, steering):
     print ("batch: {}, ecochs: {}, test_split: {}".format(batch_size, num_epochs, test_size))
     train_features, validation_features, train_labels, validation_labels = train_test_split(imgs, steering, test_size=test_size)
@@ -220,6 +231,7 @@ batch_size = 512
 imgs = []
 steering = []
 
+# Data to include
 add_data(imgs, steering, "data/course_train", use_left_right=False)
 add_data(imgs, steering, "data/mb_train/issue_bridge", use_left_right=False)
 add_data(imgs, steering, "data/mb_train/issue_bridge_bis", use_left_right=False)
