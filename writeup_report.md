@@ -12,13 +12,14 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[center]: ./images/center_driving.jpg "Model Visualization"
-[recovery]: ./images/recovery.jpg "Grayscaling"
-[border]: ./images/border.jpg "Recovery Image"
-[bend_1]: ./images/bend_1.jpg "Recovery Image"
-[bridge]: ./images/bridge.jpg "Flipped Image"
-[bend_2]: ./images/bend_2.jpg "Recovery Image"
-[bend_4]: ./images/bend_4.jpg "Normal Image"
+[center]: ./images/center_driving.jpg "Central Driving"
+[recovery]: ./images/recovery.jpg "Recovery Driving"
+[border]: ./images/border.jpg "Border"
+[bend_1]: ./images/bend_1.jpg "Bend 1"
+[bridge]: ./images/bridge.jpg "Bridge"
+[bend_2]: ./images/bend_2.jpg "Bend 2"
+[bend_4]: ./images/bend_4.jpg "Bend 4"
+[video]: ./run1.mp4 "Autonomous driving video"
 
 
 ## Rubric Points
@@ -34,7 +35,7 @@ My project includes the following files:
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network
 * model_no_crop.h5 I spent most of my time training an architecture with no CroppingLayer because of an issue with Keras. This model drives the car much smoother but fails in bend 2 
-* run1.mp4 a video of a successful lap using model.h5
+* run1.mp4 a video of a successful lap using model.h5: [video]
 * writeup_report.md summarizing the results, the file you are reading now
 
 #### 2. Submission includes functional code
@@ -128,7 +129,7 @@ Making sure we don't drive out of the track:
 
 The issue with the bridge is that the car kept hitting the sides of the bridge at the very beginning, hence it didn't make it onto the bridge. The training data helped by steering the car away from the borders and toward the center of the road. The bends mostly required additional examples (probably to know what to do when the car is shifted a little bit away from the center, as well as steering toward the center of the road in case the car had ended up close to an edge).
 
-I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
+I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away when it tends to get off road.
 
 #### 5. Final Model Architecture
 
