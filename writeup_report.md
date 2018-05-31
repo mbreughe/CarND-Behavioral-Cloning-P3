@@ -53,11 +53,11 @@ The model.py file contains the code for training and saving the convolution neur
 The overal approach was to create an incremental better network by 1) changing the architecture, 2) changing hyper-parameters and 3) supplying training data in tricky situations. I started out with a simple LeNet-network just to have the car do something. Soon I started implementing the Nvidia network for self-driving cars, documented here: https://devblogs.nvidia.com/deep-learning-self-driving-cars/, with some small adjustments.
 
 The biggest challenge I had was the fact that Cropping2D didn't work on the deployment machine: https://discussions.udacity.com/t/cropping2d-tensorflow-python-framework-errors-impl-invalidargumenterror/704632. 
-I spent around 20hours training this nvidia-based model without the Cropping2D layer, because I was destined to make it work. The biggest improvement in this model were the introduction of a MaxPooling layer to reduce the image size 4x. This was an attempt to "blur out" the details as an alternative to cropping them out. Another big improvement came from increasing the batch size from 32 to 512. By providing specialized training data for the first bend and the bridge, I was able to make it all the way through bend number 2. Supplying 3442 additional images for this tricky situation did not solve the problem. This first model is saved as model_no_crop.h5, which drives pretty smooth until that second bend.
+I spent around 20hours training this nvidia-based model without the Cropping2D layer, because I was destined to make it work. The biggest improvement in this model were the introduction of a MaxPooling layer to reduce the image size 4x. This was an attempt to "blur out" the details as an alternative to cropping them out. Another big improvement came from increasing the batch size from 32 to 512. By providing specialized training data for the first bend and the bridge, I was able to make it all the way through bend number 2. Supplying 3442 additional images for this tricky situation did not solve the problem. This first model is saved as **model_no_crop.h5**, which drives pretty smooth until that second bend. I'd suggest the reader to also try out this model.
 
 Another challenge I had, was the fact that after multiple training runs (over 60) I wasn't able to find a good correction factor for the steering angles when using left and right images: https://discussions.udacity.com/t/multiple-cameras-how-to-tune/709391. I suspect the Cropping2D image was also preventing me from finding this factor. This however, significantly reduced the amount of training data I could have used (by 66% !!)
 
-Instead of quiting with a pretty good model (for not being able to crop images), I investigated different strategies to fix the initial cropping issue. I ended up creating a custom Lambda layer in Keras, that does the cropping for me. Building the layer itself costed me about an hour, which was a very good investment. The car was able to drive through bend 2 and even bend 3 without providing specialized data for it. Using this pretrained model, I was able to get through the whole track by providing additional training data for bend 4. This model is saved as model.h5, is less smooth, but drives multiple laps.
+Instead of quiting with a pretty good model (for not being able to crop images), I investigated different strategies to fix the initial cropping issue. I ended up creating a custom Lambda layer in Keras, that does the cropping for me. Building the layer itself costed me about an hour, which was a very good investment. The car was able to drive through bend 2 and even bend 3 without providing specialized data for it. Using this pretrained model, I was able to get through the whole track by providing additional training data for bend 4. This model is saved as **model.h5**, is less smooth than model_no_crop.h5, but drives multiple laps successfully. Because of its shaky behavior, I would probably not assign it as my designated driver just yet :).
 
 #### 2. An appropriate model architecture has been employed
 
@@ -91,38 +91,22 @@ I tried a couple of additional cropping layers and fully connected layers, but d
 
 #### 4. Appropriate training data
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+I used the data provided by Udacity, in addition to lots of self-created training data that I recorded from the simulator. I initially tried without the Udacity data, but I think my driving skills in the simulator are not that smooth :) -- though I used a PS4 controller. 
 
-For details about how I created the training data, see the next section. 
+The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4. 
 
-### Model Architecture and Training Strategy
+I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
 
-#### 1. Solution Design Approach
+#### 5. Final Model Architecture
 
-The overall strategy for deriving a model architecture was to ...
-
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
-
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
-
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
-
-#### 2. Final Model Architecture
-
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architecture (model.py lines 147-183) consisted of a convolution neural network with the following layers and layer sizes:
 
 Here is a visualization of the architecture:
 ____________________________________________________________________________________________________
 | Layer (type) |                    Output Shape   |       Num Params  |    Connected to |
 |:---------------------:|:---------------------:|:---------------------:|:---------------------:|
 | lambda_1 (Lambda: normalization)      |          (None, 160, 320, 3)|   0           | lambda_input_1[0][0] |
-| lambda_2 (Lambda: custom cropper)      |          (None, 90, 320, 3) |   0           | lambda_1[0][0] |
+| lambda_2 (Lambda: custom cropper)  (1)    |          (None, 90, 320, 3) |   0           | lambda_1[0][0] |
 | convolution2d_1  (Convolution2D) | (None, 43, 158, 24) |  1824      |  lambda_2[0][0] |
 | convolution2d_2 (Convolution2D)  | (None, 20, 77, 36)    | 21636       | convolution2d_1[0][0] |
 | convolution2d_3 (Convolution2D)  | (None, 8, 37, 48)     | 43248       | convolution2d_2[0][0] |
@@ -137,31 +121,5 @@ ________________________________________________________________________________
 
 Total params: 981,819
 
-
-#### 3. Creation of the Training Set & Training Process
-
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+lambda_2 is my custom layer that I built to do the cropping from scratch (Cropping2D did not work on the deployment machine).
+(1) Note: for model_no_crop.h5, lambda_2 was replaced by a MaxPooling2D layer to reduce the resolution of the image.
