@@ -96,26 +96,37 @@ I used the data provided by Udacity, in addition to lots of self-created trainin
 
 The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road. Here is an overview:
 
+
+
 Some center lane driving data:
+
 ![center]
 
 Data to get past bend 1:
+
 ![bend_1]
 
 Data to get past the bridge:
+
 ![bridge]
 
 Data to get past bend 2:
+
 ![bend_2]
 
 Getting past bend 4:
+
 ![bend_4]
 
 Recovery data:
+
 ![recovery]
 
 Making sure we don't drive out of the track:
+
 ![border]
+
+The issue with the bridge is that the car kept hitting the sides of the bridge at the very beginning, hence it didn't make it onto the bridge. The training data helped by steering the car away from the borders and toward the center of the road. The bends mostly required additional examples (probably to know what to do when the car is shifted a little bit away from the center, as well as steering toward the center of the road in case the car had ended up close to an edge).
 
 I believe my recovery driving data was a bit aggressive as you'll sometimes see the car jerking away from an almost fatal situation. 
 
