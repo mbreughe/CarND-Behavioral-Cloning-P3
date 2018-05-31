@@ -48,15 +48,26 @@ The model.py file contains the code for training and saving the convolution neur
 
 ### Model Architecture and Training Strategy
 
-#### 1. An appropriate model architecture has been employed
+#### 1. Solution Design Approach and Challenges
+
+The overal approach was to create an incremental better network by 1) changing the architecture, 2) changing hyper-parameters and 3) supplying training data in tricky situations. I started out with a simple LeNet-network just to have the car do something. Soon I started implementing the Nvidia network for self-driving cars, documented here: https://devblogs.nvidia.com/deep-learning-self-driving-cars/, with some small adjustments.
+
+The biggest challenge I had was the fact that Cropping2D didn't work on the deployment machine: https://discussions.udacity.com/t/cropping2d-tensorflow-python-framework-errors-impl-invalidargumenterror/704632. 
+I spent around 20hours training this nvidia-based model without the Cropping2D layer, because I was destined to make it work. The biggest improvement in this model were the introduction of a MaxPooling layer to reduce the image size 4x. This was an attempt to "blur out" the details as an alternative to cropping them out. Another big improvement came from increasing the batch size from 32 to 512. By providing specialized training data for the first bend and the bridge, I was able to make it all the way through bend number 2. Supplying 3442 additional images for this tricky situation did not solve the problem. This first model is saved as model_no_crop.h5, which drives pretty smooth until that second bend.
+
+Another challenge I had, was the fact that after multiple training runs (over 60) I wasn't able to find a good correction factor for the steering angles when using left and right images: https://discussions.udacity.com/t/multiple-cameras-how-to-tune/709391. I suspect the Cropping2D image was also preventing me from finding this factor. This however, significantly reduced the amount of training data I could have used (by 66% !!)
+
+Instead of quiting with a pretty good model (for not being able to crop images), I investigated different strategies to fix the initial cropping issue. I ended up creating a custom Lambda layer in Keras, that does the cropping for me. Building the layer itself costed me about an hour, which was a very good investment. The car was able to drive through bend 2 and even bend 3 without providing specialized data for it. Using this pretrained model, I was able to get through the whole track by providing additional training data for bend 4. This model is saved as model.h5, is less smooth, but drives multiple laps.
+
+#### 2. An appropriate model architecture has been employed
 
 My model consists of a convolution neural network with 5x5 and 3x3 filter sizes and depths between 24 and 64. 
 
 After the final convolution layer, it flattens the previous output, adds dropout and adds 4 dense layers. The dense layers use ReLU activation to introduce nonlinearity.
 
-Prior to going through the network, the images are normalized, and cropped using two lambda functions. Keras's built-in Cropping2D layer did not work on the deployment machine, which is why I implemented a Lambda function to achieve the s ame result.
+Prior to going through the network, the images are normalized, and cropped using two lambda functions. Keras's built-in Cropping2D layer did not work on the deployment machine, which is why I implemented a Lambda function to achieve the same result.
 
-#### 2. Attempts to reduce overfitting in the model
+#### 3. Attempts to reduce overfitting in the model
 
 As mentioned before, I used a dropout layer (with 50% retention rate), to avoid overfitting. I introduced it rather early in the model, but I do remember it helping with overfitting.
 
@@ -66,7 +77,7 @@ Also, when introducing new data to help the car in tricky situations (e.g., give
 
 I used scikits's built-in function to split my data between train and validation sets. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
-#### 3. Model parameter tuning
+#### 4. Model parameter tuning
 
 The model used an adam optimizer, however, I did use a start learning of 0.001. In addition, when fine-tuning successful models, I found it useful to reset the the start learning rate to 0.001 to avoid overfitting.
 
@@ -75,6 +86,8 @@ I used 10 epochs for the initial model and 4 epochs for refined versions.
 I played around with batch sizes as well and found that the largest number I tried (512) achieved significant better results.
 
 I used 33% of all data as validation data.
+
+I tried a couple of additional cropping layers and fully connected layers, but did not find this useful. The Nvidia architecture is already highly tuned for this task. The dropout of 0.5 that I added seemed better than other values I tried.
 
 #### 4. Appropriate training data
 
