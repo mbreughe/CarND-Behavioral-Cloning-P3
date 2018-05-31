@@ -94,9 +94,9 @@ The final model architecture (model.py lines 18-24) consisted of a convolution n
 
 Here is a visualization of the architecture:
 ____________________________________________________________________________________________________
-Layer (type) |                    Output Shape   |       Num Params  |    Connected to
+|Layer (type) |                    Output Shape   |       Num Params  |    Connected to
 ____________________________________________________________________________________________________
-lambda_1 (Lambda)      |          (None, 160, 320, 3)   0           lambda_input_1[0][0]
+|lambda_1 (Lambda)      |          (None, 160, 320, 3)|   0           |lambda_input_1[0][0]
 ____________________________________________________________________________________________________
 lambda_2 (Lambda)                (None, 90, 320, 3)    0           lambda_1[0][0]
 ____________________________________________________________________________________________________
