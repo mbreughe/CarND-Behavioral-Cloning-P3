@@ -3,8 +3,8 @@
 **Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior
-* Build, a convolution neural network in Keras that predicts steering angles from images
+* Use the simulator (see https://github.com/udacity/self-driving-car-sim) to collect data of good driving behavior
+* Build a convolution neural network in Keras that predicts steering angles from images
 * Train and validate the model with a training and validation set
 * Test that the model successfully drives around track one without leaving the road
 * Summarize the results with a written report
@@ -46,13 +46,15 @@ python drive.py model.h5
 
 #### 3. Submission code is usable and readable
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+The model.py file contains the code for training and saving the convolutional neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
 ### Model Architecture and Training Strategy
 
 #### 1. Solution Design Approach and Challenges
 
-The overal approach was to create an incremental better network by 1) changing the architecture, 2) changing hyper-parameters and 3) supplying training data in tricky situations. I started out with a simple LeNet-network just to have the car do something. Soon I started implementing the Nvidia network for self-driving cars, documented here: https://devblogs.nvidia.com/deep-learning-self-driving-cars/, with some small adjustments.
+The overal approach was to create an incremental better network by 1) changing the architecture, 2) changing hyper-parameters and 3) supplying additional training data in tricky situations. 
+
+I started out with a simple LeNet-network just to have the car do something. Soon I started implementing the Nvidia network for self-driving cars, documented here: https://devblogs.nvidia.com/deep-learning-self-driving-cars/, with some small adjustments. 
 
 The biggest challenge I had was the fact that Cropping2D didn't work on the deployment machine: https://discussions.udacity.com/t/cropping2d-tensorflow-python-framework-errors-impl-invalidargumenterror/704632. 
 I spent around 20 hours training this nvidia-based model without the Cropping2D layer, because I was destined to make it work. The biggest improvement in this model were the introduction of a MaxPooling layer to reduce the image size 4x. This was an attempt to "blur out" the details as an alternative to cropping them out. Another big improvement came from increasing the batch size from 32 to 512. By providing specialized training data for the first bend and the bridge, I was able to make it all the way through bend number 2. Supplying 3442 additional images for this tricky situation did not solve the problem. This first model is saved as **model_no_crop.h5**, which drives pretty smooth until that second bend. I'd suggest the reader to also try out this model.
@@ -63,7 +65,7 @@ Instead of quiting with a pretty good model (for not being able to crop images),
 
 #### 2. An appropriate model architecture has been employed
 
-My model consists of a convolution neural network with 5x5 and 3x3 filter sizes and depths between 24 and 64. 
+My model consists of a convolutional neural network with 5x5 and 3x3 filter sizes and depths between 24 and 64. 
 
 After the final convolution layer, it flattens the previous output, adds dropout and adds 4 dense layers. The dense layers use ReLU activation to introduce nonlinearity.
 
