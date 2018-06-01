@@ -83,19 +83,19 @@ I used scikits's built-in function to split my data between train and validation
 
 #### 4. Model parameter tuning
 
-The model used an adam optimizer, however, I did use a start learning of 0.001. In addition, when fine-tuning successful models, I found it useful to reset the the start learning rate to 0.001 to avoid overfitting.
+The model used an adam optimizer. I manually set a start learning of 0.001. In addition, when fine-tuning successful models, I found it useful to reset the the start learning rate to 0.001 to avoid overfitting.
 
-I used 10 epochs for the initial model and 4 epochs for refined versions.
+I started of with 10 epochs to reach a model that does a pretty decent job. Starting from there, I refined it by providing additional training data in tricky situations. I followed this strategy in the non-cropped version for a long time: starting from a good model and then incrementally refining it with additional training data seems to work well.
 
 I played around with batch sizes as well and found that the largest number I tried (512) achieved significant better results.
 
 I used 33% of all data as validation data.
 
-I tried a couple of additional cropping layers and fully connected layers, but did not find this useful. The Nvidia architecture is already highly tuned for this task. The dropout of 0.5 that I added seemed better than other values I tried.
+I tried a couple of additional cropping layers and fully connected layers, but did not find this useful. The Nvidia architecture is already highly tuned for its purpose. The dropout of 0.5 that I added seemed better than other values I tried.
 
 #### 4. Appropriate training data
 
-I used the data provided by Udacity, in addition to lots of self-created training data that I recorded from the simulator. I initially tried without the Udacity data, but I think my driving skills in the simulator are not that smooth :) -- though I used a PS4 controller. f
+I used the data provided by Udacity, in addition to lots of self-created training data that I recorded from the simulator. I initially tried without the Udacity data, but I think my driving skills in the simulator are not that smooth :) -- though I used a PS4 controller.
 
 The additional data that I very cautiously generated was some "recovery driving", half a track all the way till tricky bend number 2 and around 10K images of tricky situations. These situations include bend 1, the bridge, bend 2 and bend 4, as well as some situations steering away from the borders of the road. Here is an overview:
 
